@@ -1,8 +1,9 @@
-<<<<<<< HEAD
-# DIDS-MFL
-A disentangled intrusion detection method to handle various intrusion detection scenarios, e.g. known attacks, unknown attacks, and few-shot attacks.
+#  Doubly Disentangled Intrusion Detection
 =======
-#  Doubly Disentangled Few-Shot Intrusion Detection
+# DIDS-MFL
+
+A disentangled intrusion detection method to handle various intrusion detection scenarios, e.g. known attacks, unknown attacks, and few-shot attacks.
+
 
 This repository contains the implementation of a sophisticated intrusion detection system (IDS) tailored for the Internet of Things (IoT) environment. We propose 3D-IDS and MFL, the former is a novel method that aims to tackle the performance inconsistent issues through two-step feature disentanglements and a dynamic graph diffusion scheme, and the latter is a plug-and-play module few-shot intrusion detection module by multi-scale information fusion.The system is designed to identify both known and unknown attacks in encrypted network traffics, providing a frontline defense against increasingly sophisticated cyber threats.
 
