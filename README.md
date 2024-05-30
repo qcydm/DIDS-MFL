@@ -7,6 +7,8 @@ A disentangled intrusion detection method to handle various intrusion detection 
 
 This repository contains the implementation of a sophisticated intrusion detection system (IDS) tailored for the Internet of Things (IoT) environment, which we called DIDS-MFL. DIDS-MFS has two critical components: DIDS and MFS. DIDS is a novel method that aims to tackle the performance inconsistent issues through two-step feature disentanglements and a dynamic graph diffusion scheme, and MFS is a plug-and-play module few-shot intrusion detection module by multi-scale information fusion. Equipped with DIDS-MFL, the administrators can effectively identify various attacks in encrypted traffic, including known, unknown ones, and the few-shot threats that are not easily detected. 
 
+![43a443e0befbe34d6aed89cd354b439](https://github.com/qcydm/DIDS-MFL/assets/42266769/57c3b662-a3c1-485e-8d21-028b55e71529)
+
 ## Key Features
 
 - **Dynamic Graph Diffusion**: Employs a dynamic graph diffusion scheme for spatial-temporal aggregation in evolving data streams.
