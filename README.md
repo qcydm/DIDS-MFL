@@ -99,6 +99,12 @@ You can change datasets in main.py:
 - NF-UQ-NIDS：A dataset from the University of Queensland for testing NIDS, featuring various network traffic scenarios.
 - NF-BoT-IoT-v2：An updated dataset focusing on IoT botnet attacks, providing refined data for network security research.
 
+You can download above datasets used in this paper from the following URLs: Kaggle Edge-IIoT Dataset and UQ NIDS Datasets. Then, select one of the three datasets.py files under the data directory to process the corresponding dataset.
+
+For example, to deal with the CIC datasets, you would use:
+```bash
+python datasets_CIC.py
+```
 
 ### Using Your Own Data
 You can also use your own data with our system by datasets.py. Please make sure that you keep the following column information：
