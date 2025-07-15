@@ -12,7 +12,9 @@ from torch_geometric.nn.models.tgn import (
     LastAggregator,
     LastNeighborLoader,
 )
-
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 from model.MGD import MGD
 from model.SE import SelfExpr
 from utils.LOSS import Loss
@@ -33,7 +35,7 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-data_all = torch.load("./data/CIC-BoT-IoT.pt")
+data_all = torch.load("./data/CIC-ToN-IoT.pt",weights_only=False)
 print(data_all)
 class_pre =10
 class_meta_train = 5
@@ -381,6 +383,19 @@ def meta_test():
         recall_score.append(recall)
     precision_scores.append(np.mean(precision_score))
     recall_scores.append(np.mean(recall_score))
+
+
+       
+    labels = true
+    np.save('./picdata/labels.npy', labels)
+    #t-SNE
+    out_embedding = out_vectors.cpu().detach().numpy()
+    # tsne = TSNE(n_components=2, perplexity=2, random_state=42, init='random', learning_rate=200.0)
+    # perplexity:预估每个cluster可能有多少个元素
+    tsne = TSNE(n_components=2, perplexity=20,early_exaggeration=12, random_state=42, init='random', learning_rate=1000.0)
+
+    tsne_results = tsne.fit_transform(out_embedding)
+    np.save('./picdata/t-SNE_embeddings.npy', tsne_results)
     return f1/10, nmi/10
 
 
@@ -390,9 +405,9 @@ if __name__ == '__main__':
     recall_scores = []
     test_f1_scores = []
     test_nmi_scores = []
-    for epoch in range(50):
-        loss = pre_train()
-        print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}')
+    # for epoch in range(50):
+    #     loss = pre_train()
+    #     print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}')
     # torch.save(memory,'./data/memory.pth')
     # torch.save(mgd,'./data/mgd.pth')
     # torch.save(assoc,'./data/memory.pth')
@@ -404,6 +419,25 @@ if __name__ == '__main__':
         print(f'test F1 = {f1}, nmi = {nmi}')
         test_f1_scores.append(f1)
         test_nmi_scores.append(nmi)
+
+
+        tsne_results = np.load('./picdata/t-SNE_embeddings.npy')
+        scale_factor = 0.25
+        point_size = 150
+        tsne_results_scaled = tsne_results * scale_factor
+        labels = np.load('./picdata/labels.npy')
+
+
+        # # t-SNE 散点图
+        plt.figure(figsize=(10, 8))
+        scatter = plt.scatter(tsne_results_scaled[:, 0], tsne_results_scaled[:, 1], c=labels, alpha=0.6, s=point_size)
+        #plt.title('Similarity t-SNE Visualization', fontsize=32, fontweight='bold')  # 加大并加粗标题
+        #plt.xlabel('Dimension 1', fontsize=14, fontweight='bold')  # 加大并加粗 x 轴标签
+        #plt.ylabel('Dimension 2', fontsize=14, fontweight='bold')  # 加大并加粗 y 轴标签
+        plt.xticks(fontsize=28, fontweight='bold')  # 加大并加粗 x 轴刻度标签
+        plt.yticks(fontsize=28, fontweight='bold')  # 加大并加粗 y 轴刻度标签
+        plt.savefig(f'./pic/tsne{i}_BSnet.pdf', bbox_inches='tight')
+
     # avg_precision = np.mean(precision_scores) if precision_scores else 0
     # avg_recall = np.mean(recall_scores) if recall_scores else 0
     # print(f'Average Precision: {avg_precision:.4f} ± {std_precision:.4f}')

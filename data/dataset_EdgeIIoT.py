@@ -14,6 +14,7 @@ from z3 import Optimize, RealVector, Sum, And, sat
 
 
 df = pd.read_csv("./data/DNN-EdgeIIoT-dataset.csv", low_memory=False)
+# df = df[:10000]
 def is_valid_ip(ip_addr):
     if pd.isnull(ip_addr):
         return False
@@ -32,6 +33,13 @@ df['frame.time'] = df['frame.time'].apply(remove_last_three_digits)
 # 保存到新的 CSV 文件
 df.to_csv("./data/DNN-EdgeIIoT-dataset_dealed.csv", index=False)
 
+# 更改
+def safe_strptime(x):
+    try:
+        return int(datetime.datetime.strptime(x, "%d/%m/%Y %I:%M:%S %p").timestamp())
+    except ValueError:
+        print("ValueError")
+        return None  # 或者你可以选择返回一个默认值，或者记录错误
 
 class My_Dataset(Dataset, ABC):
     def __init__(self, root='./data/', transform=None, pre_transform=None):
@@ -56,12 +64,25 @@ class My_Dataset(Dataset, ABC):
             print("Preparing dataset EdgeIIoT-dataset.")
             df = pd.read_csv(f'./data/{self.raw_file_names}', low_memory=False)
             print("Read csv done.")
+
+
             #time
+            
             num_records = len(df)
-            random_seconds = np.random.randint(0, 86400, size=num_records, dtype='int')
+            print(num_records)
+# OverflowError: mktime argument out of range 
+            # 于是更改
+            # 限制时间戳在合理的范围内，mktime，在中国大陆（+0800时区），只能接收大于对应1970年1月1日，8时0分0秒的时间戳
+            max_seconds = (datetime.datetime(2030, 1, 1) - datetime.datetime(1970, 1, 2)).total_seconds()
+            random_seconds = np.random.randint(0, int(max_seconds), size=num_records, dtype='int')
+            # random_seconds = np.random.randint(0, 86400, size=num_records, dtype='int')
             random_seconds = random_seconds.tolist()
-            random_time_stamps = [datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=i) for i in random_seconds]
+            random_time_stamps = [datetime.datetime(1970, 1, 2) + datetime.timedelta(seconds=i) for i in random_seconds]
             random_time_stamps_str = [time.strftime('%d/%m/%Y %I:%M:%S %p') for time in random_time_stamps]
+            print(random_time_stamps_str[:20])
+            
+            
+            
             df.drop(df.columns[0], axis=1)
             # df = df.drop(columns=["Flow ID"])
             src_matches = df['ip.src_host'].str.endswith(('.0', '.1', '.255'))
@@ -96,7 +117,16 @@ class My_Dataset(Dataset, ABC):
             df.insert(6, 'layer j', 0)
             df.loc[dst_matches, 'layer_j'] = 1
             #temp_data = df.pop('Flow Duration')
-            #df.insert(7, 'FLOW_DURATION_MILLISECONDS', temp_data)
+            df.insert(7, 'FLOW_DURATION_MILLISECONDS', temp_data)
+
+
+            # 应用 safe_strptime 函数到 'timestamp' 列
+            # df['timestamp'] = df['timestamp'].apply(safe_strptime)
+                # OverflowError: mktime argument out of range 
+            # 于是更改为datatime
+            # df['timestamp'] = df['timestamp'].apply(lambda x: int(datetime.datetime.strptime(x, "%d/%m/%Y %I:%M:%S %p").timestamp()))
+                                                    
+
             df['timestamp'] = df['timestamp'].apply(
                 lambda x: int(time.mktime(time.strptime(x, "%d/%m/%Y %I:%M:%S %p"))))
             df['timestamp'] = df['timestamp'] - df['timestamp'].min()
@@ -139,7 +169,7 @@ class My_Dataset(Dataset, ABC):
             label = torch.tensor(df['state_label'].values.tolist())
             t = torch.tensor(df['timestamp'].values.tolist())
             attack = torch.tensor(df['attack'].values.tolist())
-            #dt = torch.tensor(df['FLOW_DURATION_MILLISECONDS'].values.tolist())
+            dt = torch.tensor(df['FLOW_DURATION_MILLISECONDS'].values.tolist())
             sdf = df.iloc[:, 8:]
             for column in sdf.columns:
                 sdf[column] = pd.to_numeric(sdf[column], errors='coerce')
@@ -158,13 +188,13 @@ class My_Dataset(Dataset, ABC):
                 src_layer=src_layer,
                 dst_layer=dst_layer,
                 t=t,
-                #dt=dt,
+                dt=dt,
                 msg=msg,
                 label=label,
                 attack=attack)
             # torch.save(events, f"./data/{self.processed_file_names}")
             events.t = events.t.type(torch.int64) 
-            #events.dt = events.dt.type(torch.float32)
+            events.dt = events.dt.type(torch.float32)
             torch.save(events, './data/DNN-EdgeIIoT-dataset.pt')
             return
 

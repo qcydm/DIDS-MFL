@@ -102,9 +102,13 @@ def filtered_data(data,num):
     selected_attacks = unique_attacks[torch.randperm(len(unique_attacks))[:num]]
     other_attacks_mask = ~torch.isin(unique_attacks, selected_attacks)
     other_attacks = unique_attacks[other_attacks_mask]
+    # print("selected:",selected_attacks)
+    # print("other:",other_attacks)
 
     counts = Counter(data['attack'][torch.isin(data['attack'], selected_attacks)].tolist())
     counts_other = Counter(data['attack'][torch.isin(data['attack'], other_attacks)].tolist())
+    # print("counts",counts)
+    # print("counts_other",counts_other)
     sorted_attacks = sorted(counts, key=counts.get, reverse=True)
     sorted_other = sorted(counts_other, key=counts_other.get, reverse=True)
 

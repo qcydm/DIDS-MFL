@@ -24,9 +24,10 @@ def count_attacks_and_filter(csv_file, output_file):
     df_filtered.to_csv(output_file, index=False)
 
     return attack_counts
-
-input_csv = "./data/NF-BoT-IoT-v2.csv"
-output_csv = "./data/NF-BoT-IoT-v2_dealed.csv"
+# input_csv = "./data/NF-BoT-IoT-v2.csv"
+# output_csv = "./data/NF-BoT-IoT-v2_dealed.csv"
+input_csv = "./data/NF-UNSW-NB15-v2.csv"
+output_csv = "./data/NF-UNSW-NB15-v2_dealed.csv"
 
 print(count_attacks_and_filter(input_csv, output_csv))
 
@@ -37,11 +38,13 @@ class My_Dataset(Dataset, ABC):
 
     @property
     def raw_file_names(self):
-        return 'NF-BoT-IoT-v2_dealed.csv'
+        # return 'NF-BoT-IoT-v2_dealed.csv'
+        return 'NF-UNSW-NB15-v2_dealed.csv'
 
     @property
     def processed_file_names(self):
-        return 'data/NF-BoT-IoT-v2.pt'
+        # return 'data/NF-BoT-IoT-v2.pt'
+        return 'data/NF-UNSW-NB15-v2.pt'
 
     def process(self):
         DISENTANGLE = False
@@ -154,7 +157,8 @@ class My_Dataset(Dataset, ABC):
                 label=label,
                 attack=attack)
             # torch.save(events, f"./data/{self.processed_file_names}")
-            torch.save(events, './data/NF-BoT-IoT-v2_3d.pt')
+            # torch.save(events, './data/NF-BoT-IoT-v2_3d.pt')
+            torch.save(events, './data/NF-UNSW-NB15-v2_3d.pt')
             return
 
     def addr2num(self, ip, port):

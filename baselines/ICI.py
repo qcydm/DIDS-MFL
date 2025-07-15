@@ -16,6 +16,9 @@ from torch_geometric.nn.models.tgn import (
 import sys
 sys.path.append("/home/user/3D-IDS few-shot")
 
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
 from model.MGD import *
 from utils.LOSS import Loss
 from utils.MLP import MLPPredictor
@@ -177,7 +180,9 @@ def meta_train():
         # print(support_embeddings.shape)
         memory.update_state(src, dst, t, msg)
         neighbor_loader.insert(src, dst)
-        ici.fit(support_embeddings.detach().numpy(), support_y.detach().numpy())
+        ici.fit(support_embeddings.detach().cpu().numpy(), support_y.detach().cpu().numpy())
+
+        # ici.fit(support_embeddings.detach().numpy(), support_y.detach().numpy())
         # Compute prototypes
         num_classes = torch.max(attack) + 1
         prototypes = torch.zeros(num_classes, support_embeddings.size(1), device=device)
@@ -201,14 +206,16 @@ def meta_train():
         query_embeddings = torch.cat([z[assoc[src]], z[assoc[dst]]], 1)
         memory.update_state(src, dst, t, msg)
         neighbor_loader.insert(src, dst)
-        preds = ici.predict(query_embeddings.detach().numpy())
+        # preds = ici.predict(query_embeddings.detach().numpy())
+        preds = ici.predict(query_embeddings.detach().cpu().numpy())
+
         # Compute cosine similarity and classification
         logits = torch.mm(query_embeddings, prototypes.t())
         softmax_scores = F.softmax(logits, dim=1)
         true = attack.cpu().numpy()
 
         # Compute loss
-        loss = F.cross_entropy(logits, torch.tensor(true))
+        loss = F.cross_entropy(logits, torch.tensor(true, device=device))
         loss.backward()
         optimizer.step()
         memory.detach()
@@ -292,7 +299,8 @@ def meta_test():
         # vector = model1(vector)
         memory.update_state(src, dst, t, msg)
         neighbor_loader.insert(src, dst)
-        ici.fit(support_embeddings.detach().numpy(), support_y.detach().numpy())
+        # ici.fit(support_embeddings.detach().numpy(), support_y.detach().numpy())
+        ici.fit(support_embeddings.detach().cpu().numpy(), support_y.detach().cpu().numpy())
         prototypes = torch.zeros(num_classes, support_embeddings.size(1), device=device)
         counts = torch.zeros(num_classes, device=device)
         for idx, embedding in zip(attack, support_embeddings):
@@ -314,10 +322,12 @@ def meta_test():
         # out_vectors = model1(out_vectors)
         memory.update_state(src, dst, t, msg)
         neighbor_loader.insert(src, dst)
-        preds = ici.predict(query_embeddings.detach().numpy())
+        # preds = ici.predict(query_embeddings.detach().numpy())
+        preds = ici.predict(query_embeddings.detach().cpu().numpy())
         logits = torch.mm(query_embeddings, prototypes.t())
         softmax_scores = F.softmax(logits, dim=1)
-        preds = softmax_scores.argmax(dim=1)
+        # preds = softmax_scores.argmax(dim=1)
+        preds = softmax_scores.argmax(dim=1).cpu().numpy()
         true = attack.cpu().numpy()
 
         test_f1 = f1_score(true, preds, average='weighted')
@@ -331,7 +341,6 @@ def meta_test():
     precision_scores.append(np.mean(precision_score))
     recall_scores.append(np.mean(recall_score))
     return f1/10, nmi/10
-
 
 if __name__ == '__main__':
     precision_scores = []
@@ -373,7 +382,3 @@ if __name__ == '__main__':
         print(f'Average Recall: {avg_recall:.4f} ± {std_recall:.4f}', file = file)
         print(f'Average F1 Score: {avg_f1:.4f} ± {std_f1:.4f}', file = file)
         print(f'Average NMI: {avg_nmi:.4f} ± {std_nmi:.4f}', file = file)
-
-
-
-
