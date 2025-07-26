@@ -109,12 +109,11 @@ The system is evaluated on the following datasets:
 To use a dataset, modify `main.py`:
 
 ```python
-# file_name ='CIC-BoT-IoT' #0.8611 0.8536228104922525 论文：96.64 91.27
-file_name ='CIC-ToN-IoT' #0.9867 0.9692784397676699 论文：97.47 94.27
-# file_name = 'DNN-EdgeIIoT-dataset' #0.9599 0.9198900142036295 论文：92.73 88.21
-# file_name ='NF-UNSW-NB15-v2_3d' # 0.9600 0.9204684780706881 论文：97.39 94.32
-# file_name ='NF-CSE-CIC-IDS2018-v2_3d' #0.9600 0.9204684780706881 论文：93.93 90.98
-
+# file_name ='CIC-BoT-IoT' 
+file_name ='CIC-ToN-IoT' 
+# file_name = 'DNN-EdgeIIoT-dataset'
+# file_name ='NF-UNSW-NB15-v2_3d' 
+# file_name ='NF-CSE-CIC-IDS2018-v2_3d' 
 data_all = torch.load('./data/'+file_name+'.pt', weights_only=False)
 ```
 select the dataset you want to use.
