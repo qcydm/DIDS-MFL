@@ -166,12 +166,12 @@ column_info = TemporalData(
 
 ## Performance Comparison
 
-| Dataset                     | F1 Score | NMI    | Steady F1  | Steady NMI | Paper Result (F1) | Paper Result (NMI) |
+| Dataset                     | Checkpoint F1 Score |Checkpoint NMI    | Steady F1  | Steady NMI | Paper Result (F1) | Paper Result (NMI) |
 |-----------------------------|----------|--------|------------|------------|-------------------|--------------------|
-| CIC-BoT-IoT                 | 0.8611   | 0.8536 | 0.8492     | 0.7935     | 0.9664            | 0.9127             |
+| CIC-BoT-IoT                 | 0.8611   | 0.8536 | 0.8492     | 0.7935     |  0.8611            | 0.8536             |
 | CIC-ToN-IoT                 | 0.9867   | 0.9692 | 0.9867     | 0.9692     | 0.9747            | 0.9427             |
 | DNN-EdgeIIoT                | 0.9733   | 0.9391 | 0.9599     | 0.9198     | 0.9273            | 0.8821             |
-| NF-UNSW-NB15-v2_3d          | 0.9600   | 0.9204 | 0.9442     | 0.9011     | 0.9739            | 0.9432             |
+| NF-UNSW-NB15-v2_3d          | 0.9600   | 0.9204 | 0.9442     | 0.9011     | 0.9600             | 0.9204            |
 | NF-CSE-CIC-IDS2018-v2_3d    | 0.9600   | 0.9205 | 0.9600     | 0.9204     | 0.9393            | 0.9098             |
 
 
