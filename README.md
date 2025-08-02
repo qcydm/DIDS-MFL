@@ -279,9 +279,9 @@ we can visualize the heatmap of the feature embedding.
 ```python
  
     tsne = TSNE(n_components=2, perplexity=20,early_exaggeration=12, random_state=42, init='random', learning_rate=1000.0)
-# n_components:降维后的维度,默认2维
-# perplexity:预估每个cluster可能有多少个元素
-# early_exaggeration:初始放大倍数，增强类间分离
+# n_components: Dimension after dimensionality reduction, default 2 dimensions
+# perplexity: Estimated number of elements in each cluster
+# early_exaggeration: Initial magnification factor, enhancing inter-class separation
 
     tsne_results = tsne.fit_transform(out_embedding)
 ```
