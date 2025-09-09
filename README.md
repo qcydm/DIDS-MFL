@@ -16,12 +16,12 @@ The paper 'Disentangled Dynamic Intrusion Detection' has been officially publish
 
 @ARTICLE{11112665,\
   author={Qiu, Chenyang and Nan, Guoshun and Xia, Hongrui and Weng, Zheng and Wang, Xueting and Shen, Meng and Tao, Xiaofeng and Liu, Jun},\
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
-  title={Disentangled Dynamic Intrusion Detection}, 
-  year={2025},
-  volume={},
-  number={},
-  pages={1-18},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, \
+  title={Disentangled Dynamic Intrusion Detection}, \
+  year={2025},\
+  volume={},\
+  number={},\
+  pages={1-18},\
   doi={10.1109/TPAMI.2025.3595671}}
 ## Key Features
 
