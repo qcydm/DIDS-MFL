@@ -75,29 +75,27 @@ pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-${TORCH}+${C
 
 ### Usage
 1. Few-shot Multi-classification:
-- class_pre = 5
-- class_meta_train = 5
-- class_meta_test = 5
 
-- mul_predictor = MLPPredictor(in_features=embedding_dim, out_classes=5).to(device)
-- criterion = Loss(2, 5)
+class_pre = 5; class_meta_train = 5; class_meta_test = 5
 
-In split_train_val_test() and sample()
-classes = [0, 1, 2, 3, 4]
+mul_predictor = MLPPredictor(in_features=embedding_dim, out_classes=5).to(device)
 
-Filter data to 5 classes
-datax, _ = filtered_data(data1, 5)
+criterion = Loss(2, 5)
 
-support samples and 15 query samples per class
-support, query = sample(train_data, 5, 15)
+In split_train_val_test() and sample(): classes = [0, 1, 2, 3, 4]
+
+Filter data to 5 classes: datax, _ = filtered_data(data1, 5)
+
+support samples and 15 query samples per class: support, query = sample(train_data, 5, 15)
 
 MFL / Self-Expression dimension: (support+query) * num_classes = 20 * 5 = 100
+
 mfl_model = MFL((20) * class_meta_test).to(device)
+
 semodel = SelfExpr((20) * class_meta_test).to(device)
 
-In utils/funcs.py
-phi1 = torch.randn((100, 128))
-phi2 = torch.zeros((100, 100))
+In utils/funcs.py: phi1 = torch.randn((100, 128)); phi2 = torch.zeros((100, 100))
+
 Train and evaluate the model by running:
 
 ```bash
@@ -108,12 +106,14 @@ This command initiates the training process, including pre-training, meta-traini
 
 2. Muti-calssification:
 Switch to standard multi-class classification, updating the following in main.py and utils/funcs.py:
+
 1. Global class counters: set class_pre, class_meta_train, and class_meta_test to the dataset's inherent class number (e.g., 10).
 2. Classifier heads: change mul_predictor and criterion to out_classes=10.
 3. Class lists: expand classes = [0, 1, ..., 9] in split_train_val_test() and sample().
 4. Support / query sizes: adjust sample(data, 300, 100) for your desired train/test budget per class.
 5. MFL / Self-Expression dimension: set the input size to num_classes * (support + query). For example, with 10 classes and 300+100 samples per class, use MFL((400) * class_meta_test), i.e., 4000 total instances.
 6. Projection matrices in utils/funcs.py: match phi1 and phi2 to the total instance count (num_classes * (support + query)), keeping phi1's second dimension as 128.
+
 Train and evaluate the model by running:
 
 ```bash
