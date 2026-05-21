@@ -75,12 +75,12 @@ pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-${TORCH}+${C
 
 ### Usage
 1. Few-shot Multi-classification:
-class_pre = 5
-class_meta_train = 5
-class_meta_test = 5
+- class_pre = 5
+- class_meta_train = 5
+- class_meta_test = 5
 
-mul_predictor = MLPPredictor(in_features=embedding_dim, out_classes=5).to(device)
-criterion = Loss(2, 5)
+- mul_predictor = MLPPredictor(in_features=embedding_dim, out_classes=5).to(device)
+- criterion = Loss(2, 5)
 
 In split_train_val_test() and sample()
 classes = [0, 1, 2, 3, 4]
